@@ -73,7 +73,7 @@ func (w WebWorker) Login() {
 	}
 	passwordField.SendKeys(w.password)
 
-	time.Sleep(5 * time.Second)
+	time.Sleep(3 * time.Second)
 
 	loginButton, err := w.driver.FindElement(selenium.ByID, "btnSubmitForm")
 	if err != nil {
@@ -83,7 +83,47 @@ func (w WebWorker) Login() {
 	time.Sleep(1 * time.Second)
 }
 
-func (w WebWorker) GetAll() {
+func (w WebWorker) GetAll() []Position {
+	err := w.driver.Get("https://konto.flatex.at/next-desktop.at/overviewFormAction.do")
+	if err != nil {
+		log.Fatalf("Failed to load website: %v", err)
+	}
+	time.Sleep(3 * time.Second)
+	allButton, err := w.driver.FindElement(selenium.ByID, "__1551384479")
+	if err != nil {
+		log.Fatalf("Failed to find the element: %v", err)
+	}
+	allButton.Click()
+	time.Sleep(3 * time.Second)
+
+	// page, err := driver.PageSource()
+	// log.Println(page)
+
+	evenDetailsRow, err := w.driver.FindElements(selenium.ByCSSSelector, "[class='I1 Even DetailsAvailable']")
+	if err != nil {
+		log.Fatalf("Failed to find the element: %v", err)
+	}
+	oddDetailsRow, err := w.driver.FindElements(selenium.ByCSSSelector, "[class='I1 Odd DetailsAvailable']")
+	if err != nil {
+		log.Fatalf("Failed to find the element: %v", err)
+	}
+	oddLastDetailsRow, err := w.driver.FindElements(selenium.ByCSSSelector, "[class='I1 Odd LastRow DetailsAvailable']")
+	if err != nil {
+		log.Fatalf("Failed to find the element: %v", err)
+	}
+	positions := []Position{}
+	positions = append(positions, newPositionFromList(evenDetailsRow)...)
+	positions = append(positions, newPositionFromList(oddDetailsRow)...)
+	positions = append(positions, newPositionFromList(oddLastDetailsRow)...)
+
+	time.Sleep(1 * time.Second)
+	return positions
+}
+
+func (w WebWorker) GetPortfolio() {}
+func (w WebWorker) GetAccountAssetNames() []string {
+	/* returns the names of all the assets in your Account
+	 */
 	err := w.driver.Get("https://konto.flatex.at/next-desktop.at/overviewFormAction.do")
 	if err != nil {
 		log.Fatalf("Failed to load website: %v", err)
@@ -99,22 +139,19 @@ func (w WebWorker) GetAll() {
 	// page, err := driver.PageSource()
 	// log.Println(page)
 
-	names, err := w.driver.FindElements(selenium.ByCSSSelector, "[class=Ellipsis]")
+	nameElements, err := w.driver.FindElements(selenium.ByCSSSelector, "[class=Ellipsis]")
 	if err != nil {
 		log.Fatalf("Failed to find the element: %v", err)
-	}
-	amount, err := w.driver.FindElements(selenium.ByCSSSelector, "[class=PositiveAmount]")
-	if err != nil {
-		log.Fatalf("Failed to find the element: %v", err)
-	}
-	for _, item := range names {
-		log.Println(item.Text())
-	}
-	for _, item := range amount {
-		log.Println(item.Text())
 	}
 
-	time.Sleep(1 * time.Second)
+	names := []string{}
+	for _, item := range nameElements {
+		name, err := item.Text()
+		if err == nil {
+			names = append(names, name)
+		}
+	}
+	return names
 }
 
 func acceptCookies(driver selenium.WebDriver) {

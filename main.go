@@ -23,9 +23,13 @@ func main() {
 	worker.Login()
 	log.Println("logged into " + userId + " successfully")
 
-	worker.GetAll()
+	positions := worker.GetAll()
 	log.Println("got all for " + userId + " successfully")
 
-	time.Sleep(100 * time.Second)
+	for _, pos := range positions {
+		log.Println(pos.Name)
+	}
+
+	time.Sleep(10 * time.Second)
 	log.Println("webWorker completed")
 }
