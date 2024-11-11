@@ -14,8 +14,15 @@ const (
 	port            = 4444                    // Port for the WebDriver server
 )
 
-func Run(userId string, password string) {
-	// Start a WebDriver server instance
+type WebWorker struct {
+	userId   string
+	password string
+	driver   selenium.WebDriver
+	service  *selenium.Service
+}
+
+func NewWebWorker(userId string, password string) WebWorker {
+	// starts webdriver and logs in -> returns the driver instance
 	opts := []selenium.ServiceOption{
 		selenium.GeckoDriver(geckoDriverPath), // Specify GeckoDriver path
 	}
@@ -23,7 +30,6 @@ func Run(userId string, password string) {
 	if err != nil {
 		log.Fatalf("Error starting the Geckodriver service: %v", err)
 	}
-	defer service.Stop()
 
 	// Connect to the WebDriver instance
 	caps := selenium.Capabilities{"browserName": "firefox"}
@@ -31,21 +37,22 @@ func Run(userId string, password string) {
 	if err != nil {
 		log.Fatalf("Error connecting to the WebDriver: %v", err)
 	}
-	defer driver.Quit()
 
-	login(driver, userId, password)
-	log.Println("logged into " + userId + " successfully")
-
-	time.Sleep(1 * time.Second)
-	getAll(driver)
-	log.Println("got all for " + userId + " successfully")
-	time.Sleep(100 * time.Second)
-
-	log.Println("webWorker completed")
+	return WebWorker{
+		userId,
+		password,
+		driver,
+		service,
+	}
 }
 
-func login(driver selenium.WebDriver, userId string, password string) {
-	err := driver.Get("https://konto.flatex.at/login.at/loginIFrameFormAction.do")
+func (w WebWorker) Close() {
+	w.service.Stop()
+	w.driver.Quit()
+}
+
+func (w WebWorker) Login() {
+	err := w.driver.Get("https://konto.flatex.at/login.at/loginIFrameFormAction.do")
 	if err != nil {
 		log.Fatalf("Failed to load website: %v", err)
 	}
@@ -54,34 +61,35 @@ func login(driver selenium.WebDriver, userId string, password string) {
 	// wait for page to be loaded fully !!!
 	time.Sleep(2 * time.Second)
 
-	userField, err := driver.FindElement(selenium.ByName, "userId")
+	userField, err := w.driver.FindElement(selenium.ByName, "userId")
 	if err != nil {
 		log.Fatalf("Failed to find the userField: %v", err)
 	}
-	userField.SendKeys(userId)
+	userField.SendKeys(w.userId)
 
-	passwordField, err := driver.FindElement(selenium.ByName, "password")
+	passwordField, err := w.driver.FindElement(selenium.ByName, "password")
 	if err != nil {
 		log.Fatalf("Failed to find the passwordField: %v", err)
 	}
-	passwordField.SendKeys(password)
+	passwordField.SendKeys(w.password)
 
 	time.Sleep(5 * time.Second)
 
-	loginButton, err := driver.FindElement(selenium.ByID, "btnSubmitForm")
+	loginButton, err := w.driver.FindElement(selenium.ByID, "btnSubmitForm")
 	if err != nil {
 		log.Fatalf("Failed to find the loginButton: %v", err)
 	}
 	loginButton.Click()
+	time.Sleep(1 * time.Second)
 }
 
-func getAll(driver selenium.WebDriver) {
-	err := driver.Get("https://konto.flatex.at/next-desktop.at/overviewFormAction.do")
+func (w WebWorker) GetAll() {
+	err := w.driver.Get("https://konto.flatex.at/next-desktop.at/overviewFormAction.do")
 	if err != nil {
 		log.Fatalf("Failed to load website: %v", err)
 	}
 	time.Sleep(5 * time.Second)
-	allButton, err := driver.FindElement(selenium.ByID, "__1551384479")
+	allButton, err := w.driver.FindElement(selenium.ByID, "__1551384479")
 	if err != nil {
 		log.Fatalf("Failed to find the element: %v", err)
 	}
@@ -91,11 +99,11 @@ func getAll(driver selenium.WebDriver) {
 	// page, err := driver.PageSource()
 	// log.Println(page)
 
-	names, err := driver.FindElements(selenium.ByCSSSelector, "[class=Ellipsis]")
+	names, err := w.driver.FindElements(selenium.ByCSSSelector, "[class=Ellipsis]")
 	if err != nil {
 		log.Fatalf("Failed to find the element: %v", err)
 	}
-	amount, err := driver.FindElements(selenium.ByCSSSelector, "[class=PositiveAmount]")
+	amount, err := w.driver.FindElements(selenium.ByCSSSelector, "[class=PositiveAmount]")
 	if err != nil {
 		log.Fatalf("Failed to find the element: %v", err)
 	}

@@ -4,6 +4,7 @@ import (
 	"flatech/webWorker"
 	"log"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -16,5 +17,15 @@ func main() {
 
 	userId := os.Getenv("USERID")
 	password := os.Getenv("PASSWORD")
-	webWorker.Run(userId, password)
+
+	worker := webWorker.NewWebWorker(userId, password)
+	defer worker.Close()
+	worker.Login()
+	log.Println("logged into " + userId + " successfully")
+
+	worker.GetAll()
+	log.Println("got all for " + userId + " successfully")
+
+	time.Sleep(100 * time.Second)
+	log.Println("webWorker completed")
 }
