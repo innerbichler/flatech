@@ -1,6 +1,7 @@
 <div align="center">
 <img src="./mountain_fuzzy.png" width="350">
 </div>
+
 # Flatech 
 
 is a webWorker using selenium to perform various task in the Flatex Webportal in the CLI
