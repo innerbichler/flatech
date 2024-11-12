@@ -1,7 +1,5 @@
 # Flatech 
-<p align="center" width="100" height="150">
-  <img src="./mountain.png" />
-</p>
+<img src="./mountain.png">
 
 is a webWorker using selenium to perform various task in the Flatex Webportal in the CLI
 
