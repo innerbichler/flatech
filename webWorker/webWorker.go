@@ -26,13 +26,21 @@ func NewWebWorker(userId string, password string) WebWorker {
 	opts := []selenium.ServiceOption{
 		selenium.GeckoDriver(geckoDriverPath), // Specify GeckoDriver path
 	}
+
 	service, err := selenium.NewGeckoDriverService(geckoDriverPath, port, opts...)
 	if err != nil {
 		log.Fatalf("Error starting the Geckodriver service: %v", err)
 	}
 
 	// Connect to the WebDriver instance
-	caps := selenium.Capabilities{"browserName": "firefox"}
+	caps := selenium.Capabilities{
+		"browserName": "firefox",
+		"moz:firefoxOptions": map[string]interface{}{
+			"args": []string{"--headless", "--disable-gpu"},
+		},
+	}
+	caps = selenium.Capabilities{"browserName": "firefox"}
+
 	driver, err := selenium.NewRemote(caps, fmt.Sprintf("http://localhost:%d", port))
 	if err != nil {
 		log.Fatalf("Error connecting to the WebDriver: %v", err)
@@ -80,7 +88,7 @@ func (w WebWorker) Login() {
 		log.Fatalf("Failed to find the loginButton: %v", err)
 	}
 	loginButton.Click()
-	time.Sleep(1 * time.Second)
+	time.Sleep(4 * time.Second)
 }
 
 func (w WebWorker) GetAll() []Position {
@@ -88,13 +96,13 @@ func (w WebWorker) GetAll() []Position {
 	if err != nil {
 		log.Fatalf("Failed to load website: %v", err)
 	}
-	time.Sleep(3 * time.Second)
+	time.Sleep(5 * time.Second)
 	allButton, err := w.driver.FindElement(selenium.ByID, "__1551384479")
 	if err != nil {
 		log.Fatalf("Failed to find the element: %v", err)
 	}
 	allButton.Click()
-	time.Sleep(3 * time.Second)
+	time.Sleep(5 * time.Second)
 
 	// page, err := driver.PageSource()
 	// log.Println(page)

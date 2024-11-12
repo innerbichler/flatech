@@ -27,7 +27,7 @@ func main() {
 	log.Println("got all for " + userId + " successfully")
 
 	for _, pos := range positions {
-		log.Println(pos.Name)
+		log.Println(pos)
 	}
 
 	time.Sleep(10 * time.Second)

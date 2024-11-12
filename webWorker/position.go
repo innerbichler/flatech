@@ -1,11 +1,11 @@
 package webWorker
 
 type Position struct {
-	Name                string
-	Amount              string
-	CurrentPrice        string
-	IssuePrice          string
-	DevelopmentAbsolute string
-	ClosingYesterday    string
-	DevelopmentToday    string
+	Name                       string
+	Amount                     string
+	CurrentPrice               string
+	IssuePrice                 string
+	DevelopmentAbsolutePercent string
+	ClosingYesterday           string
+	DevelopmentToday           string
 }

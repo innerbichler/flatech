@@ -22,11 +22,19 @@ func newPositionFromList(data []selenium.WebElement) []Position {
 func createNewPositionHelper(data []string) Position {
 	return Position{
 		data[0],
-		data[1],
-		data[2],
-		data[3],
-		data[4],
-		data[5],
-		data[6],
+		formatAmount(data[1]),
+		formatCurrentPrice(data[2]),
+		formatCurrentPrice(data[3]),
+		formatCurrentPrice(data[4]),
+		formatCurrentPrice(data[5]),
+		formatCurrentPrice(data[6]),
 	}
+}
+
+func formatAmount(data string) string {
+	return strings.Split(data, " ")[1]
+}
+
+func formatCurrentPrice(data string) string {
+	return strings.Split(data, " ")[0]
 }
