@@ -1,5 +1,5 @@
 # Flatech 
-<p align="center">
+<p align="center" width="100" height="150">
   <img src="./mountain.png" />
 </p>
 
