@@ -1,6 +1,7 @@
 package webWorker
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/tebeka/selenium"
@@ -35,6 +36,14 @@ func formatAmount(data string) string {
 	return strings.Split(data, " ")[1]
 }
 
-func formatCurrentPrice(data string) string {
-	return strings.Split(data, " ")[0]
+func formatCurrentPrice(data string) float64 {
+	number := strings.Split(data, " ")[0]
+
+	noDot := strings.Replace(number, ".", "", 1)
+	noComa := strings.Replace(noDot, ",", ".", 1)
+	finished, err := strconv.ParseFloat(noComa, 64)
+	if err != nil {
+		panic(err)
+	}
+	return finished
 }

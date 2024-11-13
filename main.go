@@ -3,6 +3,7 @@ package main
 import (
 	"flatech/webWorker"
 	"log"
+	"math"
 	"os"
 	"time"
 
@@ -26,10 +27,12 @@ func main() {
 	positions := worker.GetAll()
 	log.Println("got all for " + userId + " successfully")
 
+	value := 0.0
 	for _, pos := range positions {
-		log.Println(pos)
+		value += pos.CurrentPrice
 	}
-
+	value = math.Floor(value)
+	log.Println("current value of portfolio:", value, "€")
 	time.Sleep(10 * time.Second)
 	log.Println("webWorker completed")
 }
