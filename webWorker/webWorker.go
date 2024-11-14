@@ -39,7 +39,7 @@ func NewWebWorker(userId string, password string) WebWorker {
 			"args": []string{"--headless", "--disable-gpu"},
 		},
 	}
-	caps = selenium.Capabilities{"browserName": "firefox"}
+	// caps = selenium.Capabilities{"browserName": "firefox"}
 
 	driver, err := selenium.NewRemote(caps, fmt.Sprintf("http://localhost:%d", port))
 	if err != nil {
@@ -87,8 +87,16 @@ func (w WebWorker) Login() {
 	if err != nil {
 		log.Fatalf("Failed to find the loginButton: %v", err)
 	}
+
 	loginButton.Click()
 	time.Sleep(4 * time.Second)
+
+	handles, err := w.driver.WindowHandles()
+
+	// close login window and switch to new one that flatex automatically opens
+	w.driver.SwitchWindow(handles[len(handles)-1])
+	time.Sleep(3 * time.Second)
+	w.driver.CloseWindow(handles[0])
 }
 
 func (w WebWorker) GetAll() []Position {
