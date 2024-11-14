@@ -16,13 +16,13 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	userId := os.Getenv("********")
+	userId := os.Getenv("USERID")
 	password := os.Getenv("PASSWORD")
 
 	worker := webWorker.NewWebWorker(userId, password)
 	defer worker.Close()
 	worker.Login()
-	log.Println("logged into " + userId + " successfully")
+	log.Println("logged into ******** successfully")
 
 	positions := worker.GetAll()
 	log.Println("got all for " + userId + " successfully")
