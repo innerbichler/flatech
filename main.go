@@ -16,7 +16,7 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	userId := os.Getenv("USERID")
+	userId := os.Getenv("********")
 	password := os.Getenv("PASSWORD")
 
 	worker := webWorker.NewWebWorker(userId, password)
