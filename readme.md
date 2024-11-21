@@ -19,5 +19,15 @@ sudo apt install firefox
 ~~~
 this should automatically install the geckodriver
 
+### Build
+Build uses earthly.
 
+To build the scraper component do:
+~~~
+earthly +scraper
+~~~
+and then to start it just do
+~~~
+docker compose up -d -f start-scraper.yaml
+~~~
 

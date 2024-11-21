@@ -1,24 +1,36 @@
 package main
 
 import (
-	"flatech/webWorker"
 	"log"
 	"math"
 	"os"
-	"time"
+
+	"github.com/innerbichler/flatech/webWorker"
 
 	"github.com/joho/godotenv"
 )
 
 func main() {
-	conn, err := GetDatabaseConnection()
+	conn, err := webWorker.GetDatabaseConnection("./test.db")
 	if err != nil {
 		log.Fatal("Error connection to db")
 	}
-	conn.startup()
-	defer conn.db.Close()
+	conn.Startup()
+	defer conn.Connection.Close()
 
 	err = godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	result, err := conn.SelectAll()
+	if err != nil {
+		log.Fatal("Error selecting All", err)
+	}
+	log.Println(result)
+}
+
+func scrapePortfolio() webWorker.Portfolio {
+	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
@@ -35,25 +47,14 @@ func main() {
 	portfolio := worker.GetPortfolio()
 	log.Println("got portfolio for ******** successfully")
 
-	//for _, item := range portfolio.Positions {
-	//	printPosition(item)
-	//}
 	gain := ((portfolio.EquityValue / portfolio.EquityIssuePrice) - 1) * 100
 	value := math.Floor(portfolio.EquityValue*100) / 100
 	gain = math.Floor(gain*100) / 100
+
 	log.Println("current value of portfolio:", value, "€")
 	log.Println("with a total gain of", gain, "%")
-	_, err = conn.InsertPortfolio(portfolio)
-	if err != nil {
-		log.Fatal("Error inserting portfolio", err)
-	}
-	time.Sleep(10 * time.Second)
-	result, err := conn.SelectAll()
-	if err != nil {
-		log.Fatal("Error selecting All", err)
-	}
-	log.Println(result)
 	log.Println("webWorker completed")
+	return portfolio
 }
 
 func printPosition(position webWorker.Position) {

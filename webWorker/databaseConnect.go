@@ -1,8 +1,7 @@
-package main
+package webWorker
 
 import (
 	"database/sql"
-	"flatech/webWorker"
 	"log"
 	"time"
 
@@ -10,17 +9,17 @@ import (
 )
 
 type DBConnection struct {
-	db *sql.DB
+	Connection *sql.DB
 }
 
-func (con DBConnection) startup() {
-	_, err := createPortfolioSnapshotsTable(con.db)
+func (con DBConnection) Startup() {
+	_, err := con.createPortfolioSnapshotsTable()
 	if err != nil {
 		log.Println("error in creating PortfolioSnapshots table")
 		log.Println(err)
 		return
 	}
-	_, err = createPositionSnapshotsTable(con.db)
+	_, err = con.createPositionSnapshotsTable()
 	if err != nil {
 		log.Println("error in creating PositionsSnapshot table")
 		log.Println(err)
@@ -28,8 +27,8 @@ func (con DBConnection) startup() {
 	}
 }
 
-func GetDatabaseConnection() (DBConnection, error) {
-	db, err := sql.Open("sqlite", "./test.db")
+func GetDatabaseConnection(dbPath string) (DBConnection, error) {
+	db, err := sql.Open("sqlite", dbPath)
 	if err != nil {
 		log.Println("error in openning db")
 		log.Println(err)
@@ -39,7 +38,7 @@ func GetDatabaseConnection() (DBConnection, error) {
 	return DBConnection{db}, nil
 }
 
-func createPortfolioSnapshotsTable(db *sql.DB) (sql.Result, error) {
+func (con DBConnection) createPortfolioSnapshotsTable() (sql.Result, error) {
 	// table for all positions -> use the id of portfolio to get the correct one
 	sql := `CREATE TABLE IF NOT EXISTS portfolio_snapshots (
         id INTEGER PRIMARY KEY,
@@ -52,10 +51,10 @@ func createPortfolioSnapshotsTable(db *sql.DB) (sql.Result, error) {
         equityIssuePrice REAL NOT NULL,
 	timestamp INTEGER NOT NULL
     );`
-	return db.Exec(sql)
+	return con.Connection.Exec(sql)
 }
 
-func createPositionSnapshotsTable(db *sql.DB) (sql.Result, error) {
+func (con DBConnection) createPositionSnapshotsTable() (sql.Result, error) {
 	// table for all positions -> use the id of portfolio to get the correct one
 	sql := `CREATE TABLE IF NOT EXISTS position_snapshots (
         id INTEGER PRIMARY KEY,
@@ -72,10 +71,10 @@ func createPositionSnapshotsTable(db *sql.DB) (sql.Result, error) {
 	portfolio INTEGER NOT NULL,
 	FOREIGN KEY(portfolio) REFERENCES portfolio_snapshots(id)
     );`
-	return db.Exec(sql)
+	return con.Connection.Exec(sql)
 }
 
-func (con DBConnection) InsertPortfolio(portfolio webWorker.Portfolio) (sql.Result, error) {
+func (con DBConnection) InsertPortfolio(portfolio Portfolio) (sql.Result, error) {
 	timestamp := time.Now().Unix()
 	sql := `INSERT INTO portfolio_snapshots (
 	accountName,
@@ -88,21 +87,21 @@ func (con DBConnection) InsertPortfolio(portfolio webWorker.Portfolio) (sql.Resu
 	timestamp
     ) VALUES (` + portfolio.AsDBString(timestamp) + `);`
 
-	return con.db.Exec(sql)
+	return con.Connection.Exec(sql)
 }
 
-func (con DBConnection) SelectAll() ([]webWorker.Portfolio, error) {
+func (con DBConnection) SelectAll() ([]Portfolio, error) {
 	sql := `SELECT * FROM portfolio_snapshots;`
-	portfolio := []webWorker.Portfolio{}
-	rows, err := con.db.Query(sql)
+	portfolio := []Portfolio{}
+	rows, err := con.Connection.Query(sql)
 	if err != nil {
 		return portfolio, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		c := &webWorker.Portfolio{}
-		b := &webWorker.CurrentAccount{}
+		c := &Portfolio{}
+		b := &CurrentAccount{}
 		var d *int64
 		err := rows.Scan(&d, &c.AccountName, &b.Balance, &b.Available, &b.AvailableCredit, &c.Value, &c.EquityValue, &c.EquityIssuePrice, &c.Timestamp)
 		if err != nil {
