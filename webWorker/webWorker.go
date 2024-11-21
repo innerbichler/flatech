@@ -33,14 +33,14 @@ func NewWebWorker(userId string, password string) WebWorker {
 		log.Fatalf("Error starting the Geckodriver service: %v", err)
 	}
 
-	// Connect to the WebDriver instance
 	caps := selenium.Capabilities{
 		"browserName": "firefox",
 		"moz:firefoxOptions": map[string]interface{}{
 			"args": []string{"--headless", "--disable-gpu"},
 		},
 	}
-	caps = selenium.Capabilities{"browserName": "firefox"}
+	// uncomment below to start in gui mode
+	// caps = selenium.Capabilities{"browserName": "firefox"}
 
 	driver, err := selenium.NewRemote(caps, fmt.Sprintf("http://localhost:%d", port))
 	if err != nil {
@@ -56,7 +56,6 @@ func NewWebWorker(userId string, password string) WebWorker {
 }
 
 func (w WebWorker) Close() {
-	log.Println("closing webworker")
 	w.driver.Quit()
 	w.service.Stop()
 }
@@ -155,8 +154,6 @@ func (w WebWorker) GetCurrentAccount() CurrentAccount {
 		log.Fatalf("Failed to find the element: %v", err)
 	}
 
-	log.Println(balanceCreditCard[0].Text())
-
 	numbers := []float64{}
 	for _, item := range balanceCreditCard {
 		text, err := item.Text()
@@ -176,11 +173,23 @@ func (w WebWorker) GetCurrentAccount() CurrentAccount {
 
 func (w WebWorker) GetPortfolio() Portfolio {
 	positions := w.GetPositions()
+	currentValue := 0.0
+	issueValue := 0.0
+	for _, pos := range positions {
+		currentValue += pos.CurrentValue
+		issueValue += pos.IssueValue
+	}
+
 	account := w.GetCurrentAccount()
 
 	return Portfolio{
-		Positions: positions,
-		Balance:   account,
+		Timestamp:        time.Now().Unix(),
+		AccountName:      w.userId,
+		Positions:        positions,
+		Balance:          account,
+		Value:            currentValue + account.Balance,
+		EquityValue:      currentValue,
+		EquityIssuePrice: issueValue,
 	}
 }
 
