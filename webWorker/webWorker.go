@@ -3,13 +3,14 @@ package webWorker
 import (
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/tebeka/selenium"
 )
 
 const (
-	seleniumPath    = ""                      // Path to Selenium server jar (if using a standalone server, otherwise leave empty)
+	seleniumPath    = ""
 	geckoDriverPath = "/snap/bin/geckodriver" // Path to geckodriver (adjust if necessary)
 	port            = 4444                    // Port for the WebDriver server
 )
@@ -39,7 +40,7 @@ func NewWebWorker(userId string, password string) WebWorker {
 			"args": []string{"--headless", "--disable-gpu"},
 		},
 	}
-	// caps = selenium.Capabilities{"browserName": "firefox"}
+	caps = selenium.Capabilities{"browserName": "firefox"}
 
 	driver, err := selenium.NewRemote(caps, fmt.Sprintf("http://localhost:%d", port))
 	if err != nil {
@@ -55,8 +56,9 @@ func NewWebWorker(userId string, password string) WebWorker {
 }
 
 func (w WebWorker) Close() {
-	w.service.Stop()
+	log.Println("closing webworker")
 	w.driver.Quit()
+	w.service.Stop()
 }
 
 func (w WebWorker) Login() {
@@ -99,7 +101,7 @@ func (w WebWorker) Login() {
 	w.driver.CloseWindow(handles[0])
 }
 
-func (w WebWorker) GetAll() []Position {
+func (w WebWorker) GetPositions() []Position {
 	err := w.driver.Get("https://konto.flatex.at/next-desktop.at/overviewFormAction.do")
 	if err != nil {
 		log.Fatalf("Failed to load website: %v", err)
@@ -136,7 +138,52 @@ func (w WebWorker) GetAll() []Position {
 	return positions
 }
 
-func (w WebWorker) GetPortfolio() {}
+func (w WebWorker) GetCurrentAccount() CurrentAccount {
+	err := w.driver.Get("https://konto.flatex.at/next-desktop.at/overviewFormAction.do")
+	if err != nil {
+		log.Fatalf("Failed to load website: %v", err)
+	}
+	time.Sleep(5 * time.Second)
+	accountButton, err := w.driver.FindElement(selenium.ByID, "__611878645")
+	if err != nil {
+		log.Fatalf("Failed to find the element: %v", err)
+	}
+	accountButton.Click()
+	time.Sleep(5 * time.Second)
+	balanceCreditCard, err := w.driver.FindElements(selenium.ByCSSSelector, "[class='BalanceCreditAreaEntryValue']")
+	if err != nil {
+		log.Fatalf("Failed to find the element: %v", err)
+	}
+
+	log.Println(balanceCreditCard[0].Text())
+
+	numbers := []float64{}
+	for _, item := range balanceCreditCard {
+		text, err := item.Text()
+		if err == nil {
+			splitText := strings.Split(text, "\n")
+			numbers = append(numbers, formatCurrentPrice(splitText[0]))
+		}
+	}
+
+	time.Sleep(2 * time.Second)
+	return CurrentAccount{
+		Balance:         numbers[0],
+		Available:       numbers[1],
+		AvailableCredit: numbers[2],
+	}
+}
+
+func (w WebWorker) GetPortfolio() Portfolio {
+	positions := w.GetPositions()
+	account := w.GetCurrentAccount()
+
+	return Portfolio{
+		Positions: positions,
+		Balance:   account,
+	}
+}
+
 func (w WebWorker) GetAccountAssetNames() []string {
 	/* returns the names of all the assets in your Account
 	 */

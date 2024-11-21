@@ -24,12 +24,12 @@ func main() {
 	worker.Login()
 	log.Println("logged into ******** successfully")
 
-	positions := worker.GetAll()
-	log.Println("got all for " + userId + " successfully")
+	portfolio := worker.GetPortfolio()
+	log.Println("got all for ******** successfully")
 
 	value := 0.0
 	issuePrice := 0.0
-	for _, pos := range positions {
+	for _, pos := range portfolio.Positions {
 		value += pos.CurrentPrice
 		issuePrice += pos.IssuePrice
 	}
