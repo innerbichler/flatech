@@ -19,6 +19,6 @@ scraper:
 	RUN mkdir /secrets
 	# only do this because the path is currently hardcoded
 	#RUN ln  /snap/bin/geckodriver /usr/bin/geckodriver
-	ENTRYPOINT ["/scraper", "-file", "/secrets/.secrets"]
+	ENTRYPOINT ["/scraper", "-file", "/secrets/.secrets", "-database", "/secrets/scraper.db"]
 	SAVE IMAGE flatech/scraper:$tag
 

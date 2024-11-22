@@ -34,7 +34,6 @@ func GetDatabaseConnection(dbPath string) (DBConnection, error) {
 		log.Println(err)
 		return DBConnection{}, err
 	}
-	log.Println("Connected to the SQLite database successfully")
 	return DBConnection{db}, nil
 }
 

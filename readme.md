@@ -31,6 +31,6 @@ earthly +scraper
 ~~~
 and then to start it just do
 ~~~
-docker compose -f start-scraper.yaml up -d
+docker compose -f deploy-scraper.yaml up -d
 ~~~
 
