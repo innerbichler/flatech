@@ -22,6 +22,10 @@ type WebWorker struct {
 	service  *selenium.Service
 }
 
+func SWAG() {
+	log.Println("swag")
+}
+
 func NewWebWorker(userId string, password string) WebWorker {
 	// starts webdriver and logs in -> returns the driver instance
 	opts := []selenium.ServiceOption{
