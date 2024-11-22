@@ -13,9 +13,13 @@ compile-scraper:
 scraper:
 	ARG tag="latest"
 	FROM alpine:3.20.3
-	COPY +compile-scraper/scraper /
+	COPY +compile-scraper/ /
 	RUN apk add --no-cache firefox
 	RUN apk add --no-cache geckodriver
-	ENTRYPOINT ["/scraper"]
-	SAVE IMAGE flatech-scraper:$tag
+	RUN mkdir /secrets
+	# only do this because the path is currently hardcoded
+	RUN mkdir -p /snap/bin/geckodriver
+	RUN ln /usr/bin/geckodriver /snap/bin/geckodriver
+	ENTRYPOINT ["/scraper", "-file", "/secrets/.secrets"]
+	SAVE IMAGE flatech/scraper:$tag
 

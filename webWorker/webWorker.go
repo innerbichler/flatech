@@ -11,8 +11,8 @@ import (
 
 const (
 	seleniumPath    = ""
-	geckoDriverPath = "/snap/bin/geckodriver" // Path to geckodriver (adjust if necessary)
-	port            = 4444                    // Port for the WebDriver server
+	geckoDriverPath = "/usr/bin/geckodriver" // Path to geckodriver (adjust if necessary)
+	port            = 4444                   // Port for the WebDriver server
 )
 
 type WebWorker struct {

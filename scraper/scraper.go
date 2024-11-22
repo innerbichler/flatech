@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	filePtr := flag.String("file", "../.env", "path to your .env file, that holds USERID and PASSWORD")
+	filePtr := flag.String("file", ".secrets", "path to your .env file, that holds USERID and PASSWORD")
 	dbPtr := flag.String("database", "./test", "path to your database file")
 	minutePtr := flag.Int("time", 10, "time between scrapes in minutes")
 
@@ -49,7 +49,7 @@ func main() {
 
 		conn.Startup()
 		conn.InsertPortfolio(portfolio)
-		log.Println("scraped portfolio for ******** successfully")
+		log.Println("scraped portfolio for ******** successfully:", portfolio.Value, "€")
 		time.Sleep(time.Duration(*minutePtr) * time.Minute)
 	}
 }

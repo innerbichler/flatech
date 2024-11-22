@@ -1,0 +1,8 @@
+services:
+  flatech-scraper:
+    image: flatech/scraper:latest
+    container_name: scraper
+    restart: unless-stopped
+    volumes:
+      - /home/ubuntu/tmp:/secrets
+
