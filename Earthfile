@@ -18,8 +18,7 @@ scraper:
 	RUN apk add --no-cache geckodriver
 	RUN mkdir /secrets
 	# only do this because the path is currently hardcoded
-	RUN mkdir -p /snap/bin/geckodriver
-	RUN ln /usr/bin/geckodriver /snap/bin/geckodriver
+	#RUN ln  /snap/bin/geckodriver /usr/bin/geckodriver
 	ENTRYPOINT ["/scraper", "-file", "/secrets/.secrets"]
 	SAVE IMAGE flatech/scraper:$tag
 
