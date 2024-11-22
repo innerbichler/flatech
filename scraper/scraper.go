@@ -23,6 +23,7 @@ func main() {
 	log.Println("database", *dbPtr)
 	log.Println("time", *minutePtr, "min")
 	log.Println("+++++++++++++++++++++++++++++++")
+	webWorker.SWAG()
 
 	err := godotenv.Load(*filePtr)
 	if err != nil {
