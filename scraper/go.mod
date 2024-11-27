@@ -3,7 +3,6 @@ module github.com/innerbichler/flatech/scraper
 go 1.21.1
 
 require (
-	github.com/innerbichler/flatech/webWorker v0.0.0-20241122003311-6cacf2e52531
 	github.com/joho/godotenv v1.5.1
 )
 
