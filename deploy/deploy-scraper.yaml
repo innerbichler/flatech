@@ -1,6 +1,6 @@
 services:
   flatech-scraper:
-    image: flatech/scraper:latest
+    image: innerbichler/flatech-scraper:latest
     container_name: scraper
     restart: unless-stopped
     volumes:

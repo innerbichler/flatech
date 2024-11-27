@@ -68,7 +68,7 @@ func (w WebWorker) Login() {
 	// acceptCookies(driver)
 
 	// wait for page to be loaded fully !!!
-	time.Sleep(2 * time.Second)
+	time.Sleep(5 * time.Second)
 
 	userField, err := w.driver.FindElement(selenium.ByName, "userId")
 	if err != nil {

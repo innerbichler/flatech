@@ -29,8 +29,10 @@ To build the scraper component do:
 ~~~
 earthly +scraper
 ~~~
-and then to start it just do
+and then to start it just do:
 ~~~
-docker compose -f deploy-scraper.yaml up -d
+docker compose -f deploy/deploy-scraper.yaml up -d
 ~~~
+Note that the compose yamls in /deploy are just an example
+
 
