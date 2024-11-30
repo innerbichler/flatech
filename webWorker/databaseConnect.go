@@ -82,7 +82,7 @@ func (con DBConnection) InsertPosition(position Position, timestamp int64) (sql.
 	developmentAbsolutePercent,
 	closingYesterday,
 	developmentToday,
-	timestamp,
+	timestamp
     ) VALUES (` + position.AsDBString(timestamp) + `);`
 
 	return con.Connection.Exec(sql)
