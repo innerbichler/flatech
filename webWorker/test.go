@@ -8,7 +8,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func main() {
+func swag() {
 	conn, err := GetDatabaseConnection("./test.db")
 	if err != nil {
 		log.Fatal("Error connection to db")
