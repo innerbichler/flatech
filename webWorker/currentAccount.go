@@ -1,4 +1,4 @@
-package main
+package webWorker
 
 type CurrentAccount struct {
 	Balance         float64
