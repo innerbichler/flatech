@@ -53,7 +53,7 @@ func main() {
 
 		conn.Startup()
 		conn.InsertPortfolio(portfolio)
-		log.Println("scraped portfolio for ******** successfully:", portfolio.Value, "€")
+		log.Println("scraped portfolio for ******** successfully: ******** €")
 		time.Sleep(time.Duration(*minutePtr) * time.Minute)
 	}
 }

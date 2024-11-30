@@ -18,7 +18,7 @@ func main() {
 	conn.Startup()
 	defer conn.Connection.Close()
 
-	err = godotenv.Load()
+	err = godotenv.Load("/home/alex/tmp/.secrets")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
@@ -27,10 +27,12 @@ func main() {
 		log.Fatal("Error selecting All", err)
 	}
 	log.Println(result)
+	portfolio := scrapePortfolio()
+	conn.InsertPortfolio(portfolio)
 }
 
 func scrapePortfolio() webWorker.Portfolio {
-	err := godotenv.Load()
+	err := godotenv.Load("/home/alex/tmp/.secrets")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}

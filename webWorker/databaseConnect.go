@@ -91,7 +91,10 @@ func (con DBConnection) InsertPosition(position Position, timestamp int64) (sql.
 func (con DBConnection) InsertPortfolio(portfolio Portfolio) (sql.Result, error) {
 	timestamp := time.Now().Unix()
 	for _, position := range portfolio.Positions {
-		con.InsertPosition(position, timestamp)
+		_, err := con.InsertPosition(position, timestamp)
+		if err != nil {
+			log.Fatalln(err)
+		}
 	}
 	sql := `INSERT INTO portfolio_snapshots (
 	accountName,
