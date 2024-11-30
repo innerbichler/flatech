@@ -42,9 +42,9 @@ func main() {
 	defer conn.Connection.Close()
 
 	for {
-		if !isMarketOpen() {
-			continue
-		}
+		//if !isMarketOpen() {
+		//	continue
+		//}
 		portfolio := scrapePortfolio(userId, password)
 		conn, err := webWorker.GetDatabaseConnection(*dbPtr)
 		if err != nil {

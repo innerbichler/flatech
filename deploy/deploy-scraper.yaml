@@ -4,5 +4,5 @@ services:
     container_name: scraper
     restart: unless-stopped
     volumes:
-      - /home/ubuntu/tmp:/secrets
+      - /home/alex/tmp:/secrets
 

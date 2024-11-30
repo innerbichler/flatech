@@ -47,6 +47,8 @@ github.com/innerbichler/flatech/webWorker v0.0.0-20241122002242-14aea7a29e6d h1:
 github.com/innerbichler/flatech/webWorker v0.0.0-20241122002242-14aea7a29e6d/go.mod h1:n3ai5+8GrB1H8z10b+asMeMggAPCN7YNpYDCCR4Z/JQ=
 github.com/innerbichler/flatech/webWorker v0.0.0-20241122003311-6cacf2e52531 h1:6R3yRYnTGj2zdI446EgwOJV7IzgGNNW81e1q0lpIX08=
 github.com/innerbichler/flatech/webWorker v0.0.0-20241122003311-6cacf2e52531/go.mod h1:n3ai5+8GrB1H8z10b+asMeMggAPCN7YNpYDCCR4Z/JQ=
+github.com/innerbichler/flatech/webWorker v0.0.0-20241127105655-03177db45b47 h1:FYzopOcPUUnxY5c5hIs91IOKvQGS5BXvH7lXHRSvuAk=
+github.com/innerbichler/flatech/webWorker v0.0.0-20241127105655-03177db45b47/go.mod h1:n3ai5+8GrB1H8z10b+asMeMggAPCN7YNpYDCCR4Z/JQ=
 github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=
 github.com/joho/godotenv v1.5.1/go.mod h1:f4LDr5Voq0i2e/R5DDNOoa2zzDfwtkZa6DnEwAbqwq4=
 github.com/jstemmer/go-junit-report v0.0.0-20190106144839-af01ea7f8024/go.mod h1:6v2b51hI/fHJwM22ozAgKL4VKDeJcHhJFhtBdhmNjmU=

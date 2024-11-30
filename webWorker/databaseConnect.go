@@ -66,15 +66,33 @@ func (con DBConnection) createPositionSnapshotsTable() (sql.Result, error) {
 	developmentAbsolutePercent REAL NOT NULL,
 	closingYesterday REAL NOT NULL,
 	developmentToday REAL NOT NULL,
-	timestamp INTEGER NOT NULL,
-	portfolio INTEGER NOT NULL,
-	FOREIGN KEY(portfolio) REFERENCES portfolio_snapshots(id)
+	timestamp INTEGER NOT NULL
     );`
+	return con.Connection.Exec(sql)
+}
+
+func (con DBConnection) InsertPosition(position Position, timestamp int64) (sql.Result, error) {
+	sql := `INSERT INTO position_snapshot (
+	name,
+        amount,
+        currentValue,
+        currentPrice,
+        issueValue,
+        issuePrice,
+	developmentAbsolutePercent,
+	closingYesterday,
+	developmentToday,
+	timestamp,
+    ) VALUES (` + position.AsDBString(timestamp) + `);`
+
 	return con.Connection.Exec(sql)
 }
 
 func (con DBConnection) InsertPortfolio(portfolio Portfolio) (sql.Result, error) {
 	timestamp := time.Now().Unix()
+	for _, position := range portfolio.Positions {
+		con.InsertPosition(position, timestamp)
+	}
 	sql := `INSERT INTO portfolio_snapshots (
 	accountName,
         balance,
