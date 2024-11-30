@@ -1,4 +1,4 @@
-package webWorker
+package main
 
 import (
 	"database/sql"
@@ -72,7 +72,7 @@ func (con DBConnection) createPositionSnapshotsTable() (sql.Result, error) {
 }
 
 func (con DBConnection) InsertPosition(position Position, timestamp int64) (sql.Result, error) {
-	sql := `INSERT INTO position_snapshot (
+	sql := `INSERT INTO position_snapshots (
 	name,
         amount,
         currentValue,

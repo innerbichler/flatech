@@ -1,4 +1,4 @@
-package webWorker
+package main
 
 import (
 	"fmt"
@@ -17,7 +17,7 @@ type Position struct {
 }
 
 func (p Position) AsDBString(timestamp int64) string {
-	return fmt.Sprintf("%s,%d,%f,%f,%f,%f,%f,%f,%f,%d",
+	return fmt.Sprintf("'%s',%d,%f,%f,%f,%f,%f,%f,%f,%d",
 		p.Name,
 		p.Amount,
 		p.CurrentValue,

@@ -1,4 +1,4 @@
-package webWorker
+package main
 
 import (
 	"fmt"
@@ -15,7 +15,7 @@ type Portfolio struct {
 }
 
 func (p Portfolio) AsDBString(timestamp int64) string {
-	return fmt.Sprintf("%s,%f,%f,%f,%f,%f,%f,%d",
+	return fmt.Sprintf("'%s',%f,%f,%f,%f,%f,%f,%d",
 		p.AccountName,
 		p.Balance.Balance,
 		p.Balance.Available,

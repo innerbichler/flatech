@@ -4,6 +4,7 @@ go 1.21.1
 
 require (
 	github.com/glebarez/go-sqlite v1.22.0
+	github.com/joho/godotenv v1.5.1
 	github.com/tebeka/selenium v0.9.9
 )
 

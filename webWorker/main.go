@@ -5,13 +5,11 @@ import (
 	"math"
 	"os"
 
-	"github.com/innerbichler/flatech/webWorker"
-
 	"github.com/joho/godotenv"
 )
 
 func main() {
-	conn, err := webWorker.GetDatabaseConnection("./test.db")
+	conn, err := GetDatabaseConnection("./test.db")
 	if err != nil {
 		log.Fatal("Error connection to db")
 	}
@@ -28,10 +26,13 @@ func main() {
 	}
 	log.Println(result)
 	portfolio := scrapePortfolio()
+	for _, item := range portfolio.Positions {
+		printPosition(item)
+	}
 	conn.InsertPortfolio(portfolio)
 }
 
-func scrapePortfolio() webWorker.Portfolio {
+func scrapePortfolio() Portfolio {
 	err := godotenv.Load("/home/alex/tmp/.secrets")
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -40,7 +41,7 @@ func scrapePortfolio() webWorker.Portfolio {
 	userId := os.Getenv("USERID")
 	password := os.Getenv("PASSWORD")
 
-	worker := webWorker.NewWebWorker(userId, password)
+	worker := NewWebWorker(userId, password)
 	defer worker.Close()
 	worker.Login()
 
@@ -59,7 +60,7 @@ func scrapePortfolio() webWorker.Portfolio {
 	return portfolio
 }
 
-func printPosition(position webWorker.Position) {
+func printPosition(position Position) {
 	log.Println("name:", position.Name)
 	log.Println("amount:", position.Amount)
 	log.Println("currentValue:", position.CurrentValue)

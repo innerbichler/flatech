@@ -1,4 +1,4 @@
-package webWorker
+package main
 
 import (
 	"strconv"
@@ -39,8 +39,9 @@ func createNewPositionHelper(data []string) Position {
 	issueValue := formatCurrentPrice(data[4])
 	issuePrice := issueValue / float64(amount)
 
+	name := strings.ReplaceAll(data[0], " ", "-")
 	return Position{
-		Name:                       data[0],
+		Name:                       name,
 		Amount:                     amount,
 		CurrentValue:               currentValue,
 		CurrentPrice:               currentPrice,
