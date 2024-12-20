@@ -69,7 +69,7 @@ func (w WebWorker) Login() {
 	// acceptCookies(driver)
 
 	// wait for page to be loaded fully !!!
-	time.Sleep(5 * time.Second)
+	time.Sleep(10 * time.Second)
 
 	userField, err := w.driver.FindElement(selenium.ByName, "userId")
 	if err != nil {
@@ -83,7 +83,7 @@ func (w WebWorker) Login() {
 	}
 	passwordField.SendKeys(w.password)
 
-	time.Sleep(3 * time.Second)
+	time.Sleep(10 * time.Second)
 
 	loginButton, err := w.driver.FindElement(selenium.ByID, "btnSubmitForm")
 	if err != nil {
@@ -91,13 +91,13 @@ func (w WebWorker) Login() {
 	}
 
 	loginButton.Click()
-	time.Sleep(4 * time.Second)
+	time.Sleep(10 * time.Second)
 
 	handles, err := w.driver.WindowHandles()
 
 	// close login window and switch to new one that flatex automatically opens
 	w.driver.SwitchWindow(handles[len(handles)-1])
-	time.Sleep(3 * time.Second)
+	time.Sleep(10 * time.Second)
 	w.driver.CloseWindow(handles[0])
 }
 
@@ -106,13 +106,13 @@ func (w WebWorker) GetPositions() []Position {
 	if err != nil {
 		log.Fatalf("Failed to load website: %v", err)
 	}
-	time.Sleep(5 * time.Second)
+	time.Sleep(10 * time.Second)
 	allButton, err := w.driver.FindElement(selenium.ByID, "__1551384479")
 	if err != nil {
 		log.Fatalf("Failed to find the element: %v", err)
 	}
 	allButton.Click()
-	time.Sleep(5 * time.Second)
+	time.Sleep(10 * time.Second)
 
 	// page, err := driver.PageSource()
 	// log.Println(page)
@@ -134,7 +134,7 @@ func (w WebWorker) GetPositions() []Position {
 	positions = append(positions, newPositionFromList(oddDetailsRow)...)
 	positions = append(positions, newPositionFromList(oddLastDetailsRow)...)
 
-	time.Sleep(1 * time.Second)
+	time.Sleep(10 * time.Second)
 	return positions
 }
 
@@ -143,13 +143,13 @@ func (w WebWorker) GetCurrentAccount() CurrentAccount {
 	if err != nil {
 		log.Fatalf("Failed to load website: %v", err)
 	}
-	time.Sleep(5 * time.Second)
+	time.Sleep(10 * time.Second)
 	accountButton, err := w.driver.FindElement(selenium.ByID, "__611878645")
 	if err != nil {
 		log.Fatalf("Failed to find the element: %v", err)
 	}
 	accountButton.Click()
-	time.Sleep(5 * time.Second)
+	time.Sleep(10 * time.Second)
 	balanceCreditCard, err := w.driver.FindElements(selenium.ByCSSSelector, "[class='BalanceCreditAreaEntryValue']")
 	if err != nil {
 		log.Fatalf("Failed to find the element: %v", err)
@@ -164,7 +164,7 @@ func (w WebWorker) GetCurrentAccount() CurrentAccount {
 		}
 	}
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(10 * time.Second)
 	return CurrentAccount{
 		Balance:         numbers[0],
 		Available:       numbers[1],
@@ -201,13 +201,13 @@ func (w WebWorker) GetAccountAssetNames() []string {
 	if err != nil {
 		log.Fatalf("Failed to load website: %v", err)
 	}
-	time.Sleep(5 * time.Second)
+	time.Sleep(10 * time.Second)
 	allButton, err := w.driver.FindElement(selenium.ByID, "__1551384479")
 	if err != nil {
 		log.Fatalf("Failed to find the element: %v", err)
 	}
 	allButton.Click()
-	time.Sleep(5 * time.Second)
+	time.Sleep(10 * time.Second)
 
 	// page, err := driver.PageSource()
 	// log.Println(page)
