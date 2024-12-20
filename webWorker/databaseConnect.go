@@ -2,6 +2,7 @@ package webWorker
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"time"
 
@@ -112,10 +113,10 @@ func (con DBConnection) InsertPortfolio(portfolio Portfolio) (sql.Result, error)
 
 func (con DBConnection) SelectAll() ([]Portfolio, error) {
 	sql := `SELECT * FROM portfolio_snapshots;`
-	portfolio := []Portfolio{}
+	portfolios := []Portfolio{}
 	rows, err := con.Connection.Query(sql)
 	if err != nil {
-		return portfolio, err
+		return portfolios, err
 	}
 	defer rows.Close()
 
@@ -129,7 +130,30 @@ func (con DBConnection) SelectAll() ([]Portfolio, error) {
 		}
 
 		c.Balance = *b
-		portfolio = append(portfolio, *c)
+		portfolios = append(portfolios, *c)
 	}
-	return portfolio, nil
+	return portfolios, nil
+}
+
+func (con DBConnection) SelectPositionsFromPortfolio(portfolio Portfolio) ([]Position, error) {
+	timestamp := fmt.Sprintf("%d", portfolio.Timestamp)
+	sql := `SELECT * FROM positions_snapshots WHERE timestamp=` + timestamp + `;`
+	rows, err := con.Connection.Query(sql)
+	positions := []Position{}
+	if err != nil {
+		return positions, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		p := &Position{}
+		var d *int64
+		var t *int64
+		err := rows.Scan(&d, &p.Name, &p.Amount, &p.CurrentValue, &p.CurrentPrice, &p.IssueValue, &p.IssuePrice, &p.DevelopmentAbsolutePercent, &p.ClosingYesterday, &p.DevelopmentToday, &t)
+		if err != nil {
+			return nil, err
+		}
+		positions = append(positions, *p)
+	}
+	return positions, nil
 }
