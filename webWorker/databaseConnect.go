@@ -137,7 +137,7 @@ func (con DBConnection) SelectAll() ([]Portfolio, error) {
 
 func (con DBConnection) SelectPositionsFromPortfolio(portfolio Portfolio) ([]Position, error) {
 	timestamp := fmt.Sprintf("%d", portfolio.Timestamp)
-	sql := `SELECT * FROM positions_snapshots WHERE timestamp=` + timestamp + `;`
+	sql := `SELECT * FROM position_snapshots WHERE timestamp=` + timestamp + `;`
 	rows, err := con.Connection.Query(sql)
 	positions := []Position{}
 	if err != nil {
