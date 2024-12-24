@@ -61,10 +61,11 @@ func (w WebWorker) Close() {
 	w.service.Stop()
 }
 
-func (w WebWorker) Login() {
+func (w WebWorker) Login() error {
 	err := w.driver.Get("https://konto.flatex.at/login.at/loginIFrameFormAction.do")
 	if err != nil {
-		log.Fatalf("Failed to load website: %v", err)
+		log.Printf("Failed to load website: %v", err)
+		return err
 	}
 	// acceptCookies(driver)
 
@@ -73,13 +74,15 @@ func (w WebWorker) Login() {
 
 	userField, err := w.driver.FindElement(selenium.ByName, "userId")
 	if err != nil {
-		log.Fatalf("Failed to find the userField: %v", err)
+		log.Printf("Failed to find the userField: %v", err)
+		return err
 	}
 	userField.SendKeys(w.userId)
 
 	passwordField, err := w.driver.FindElement(selenium.ByName, "password")
 	if err != nil {
-		log.Fatalf("Failed to find the passwordField: %v", err)
+		log.Printf("Failed to find the passwordField: %v", err)
+		return err
 	}
 	passwordField.SendKeys(w.password)
 
@@ -87,7 +90,8 @@ func (w WebWorker) Login() {
 
 	loginButton, err := w.driver.FindElement(selenium.ByID, "btnSubmitForm")
 	if err != nil {
-		log.Fatalf("Failed to find the loginButton: %v", err)
+		log.Printf("Failed to find the loginButton: %v", err)
+		return err
 	}
 
 	loginButton.Click()
@@ -99,6 +103,7 @@ func (w WebWorker) Login() {
 	w.driver.SwitchWindow(handles[len(handles)-1])
 	time.Sleep(10 * time.Second)
 	w.driver.CloseWindow(handles[0])
+	return nil
 }
 
 func (w WebWorker) GetPositions() []Position {

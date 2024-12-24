@@ -52,6 +52,10 @@ func main() {
 		}
 
 		conn.Startup()
+		if len(portfolio.Positions) <= 0 {
+			log.Println("scrape returned empty positions, retrying")
+			continue
+		}
 		conn.InsertPortfolio(portfolio)
 		log.Println("scraped portfolio for ******** successfully: ******** €")
 		time.Sleep(time.Duration(*minutePtr) * time.Minute)
